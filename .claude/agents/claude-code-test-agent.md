@@ -1,6 +1,6 @@
 ---
 name: claude-code-test-agent
-description: Tests all 27 Claude Code hooks by logging each event to tests-agents-hook/agent-hook-fired.log
+description: Tests all 30 Claude Code hooks by logging each event to tests-agents-hook/agent-hook-fired.log
 model: opus
 color: blue
 allowedTools:
@@ -43,16 +43,34 @@ hooks:
           command: "echo \"PostToolUseFailure $(date '+%H:%M:%S')\" >> tests-agents-hook/agent-hook-fired.log"
           timeout: 5000
           async: true
+  PostToolBatch:
+    - hooks:
+        - type: command
+          command: "echo \"PostToolBatch $(date '+%H:%M:%S')\" >> tests-agents-hook/agent-hook-fired.log"
+          timeout: 5000
+          async: true
   UserPromptSubmit:
     - hooks:
         - type: command
           command: "echo \"UserPromptSubmit $(date '+%H:%M:%S')\" >> tests-agents-hook/agent-hook-fired.log"
           timeout: 5000
           async: true
+  UserPromptExpansion:
+    - hooks:
+        - type: command
+          command: "echo \"UserPromptExpansion $(date '+%H:%M:%S')\" >> tests-agents-hook/agent-hook-fired.log"
+          timeout: 5000
+          async: true
   Notification:
     - hooks:
         - type: command
           command: "echo \"Notification $(date '+%H:%M:%S')\" >> tests-agents-hook/agent-hook-fired.log"
+          timeout: 5000
+          async: true
+  MessageDisplay:
+    - hooks:
+        - type: command
+          command: "echo \"MessageDisplay $(date '+%H:%M:%S')\" >> tests-agents-hook/agent-hook-fired.log"
           timeout: 5000
           async: true
   Stop:
@@ -186,7 +204,7 @@ hooks:
           async: true
 ---
 
-You are the claude-code-test-agent. Your goal is to trigger as many of the 27 configured hooks as possible and report which ones actually fired. Follow ALL steps below in order.
+You are the claude-code-test-agent. Your goal is to trigger as many of the 30 configured hooks as possible and report which ones actually fired. Follow ALL steps below in order.
 
 ## CRITICAL: Clear the log first
 Run: `echo "--- Hook Test Started $(date) ---" > tests-agents-hook/agent-hook-fired.log`
@@ -214,13 +232,16 @@ Fetch https://wttr.in/Dubai?format=3 to get a compact weather summary.
 ### Step 7: Run final log check
 Run: `cat tests-agents-hook/agent-hook-fired.log` and include the full log contents in your response.
 
-## All 27 Hooks Configured
+## All 30 Hooks Configured
 - **PreToolUse** — fires before every tool call
 - **PostToolUse** — fires after every successful tool call
 - **PermissionRequest** — fires when a tool needs user permission
 - **PostToolUseFailure** — fires after a failed tool call
+- **PostToolBatch** — fires after a batch of parallel tool calls resolves
 - **UserPromptSubmit** — fires when a user submits a prompt
+- **UserPromptExpansion** — fires when a slash command or MCP prompt expands into a prompt
 - **Notification** — fires when a system notification is sent
+- **MessageDisplay** — fires while an assistant message is displayed to the user
 - **Stop** — fires when the agent session ends
 - **SubagentStart** — fires when a subagent launches
 - **SubagentStop** — fires when a subagent completes
@@ -248,13 +269,15 @@ Run: `cat tests-agents-hook/agent-hook-fired.log` and include the full log conte
 After completing all steps, provide:
 
 1. **Hook Trigger Summary:**
-   List each of the 27 hooks and whether it fired (from the log file):
+   List each of the 30 hooks and whether it fired (from the log file):
    - PreToolUse: [fired/not fired + count]
    - PostToolUse: [fired/not fired + count]
    - PermissionRequest: [fired/not fired + count]
    - PostToolUseFailure: [fired/not fired + count]
    - UserPromptSubmit: [fired/not fired]
+   - UserPromptExpansion: [fired/not fired]
    - Notification: [fired/not fired]
+   - MessageDisplay: [fired/not fired]
    - Stop: [fires after agent ends — check log after session]
    - SubagentStart: [fired/not fired]
    - SubagentStop: [fires after agent ends — check log after session]
