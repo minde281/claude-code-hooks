@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Demo Hook Handler - plays sounds AND updates lifecycle visualization state.
-Handles all 27 Claude Code hooks.
+Handles all 30 Claude Code hooks.
 """
 
 import json
@@ -18,8 +18,11 @@ HOOK_SOUND_MAP = {
     "PermissionRequest": "permissionrequest",
     "PostToolUse": "posttooluse",
     "PostToolUseFailure": "posttoolusefailure",
+    "PostToolBatch": "posttoolbatch",
     "UserPromptSubmit": "userpromptsubmit",
+    "UserPromptExpansion": "userpromptexpansion",
     "Notification": "notification",
+    "MessageDisplay": "messagedisplay",
     "Stop": "stop",
     "SubagentStart": "subagentstart",
     "SubagentStop": "subagentstop",
@@ -67,7 +70,7 @@ def get_state_dir():
 
 
 def create_initial_state():
-    """Return a fresh state dict with all 27 hooks inactive."""
+    """Return a fresh state dict with all 30 hooks inactive."""
     hooks = {}
     for hook_name in ALL_HOOKS:
         hooks[hook_name] = {
