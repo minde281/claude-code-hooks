@@ -541,7 +541,7 @@
         </div>
         <h1>Claude Code Hooks</h1>
         <p class="subtitle">Explaining Claude Code Hooks and Subagent Hooks</p>
-        <p style="margin-top: 60px; font-size: 0.95rem; color: #888;">As of Claude Code v2.1.114 | April 19, 2026</p>
+        <p style="margin-top: 60px; font-size: 0.95rem; color: #888;">As of Claude Code v2.1.162 | June 4, 2026</p>
     </div>
 
     <!-- Slide 2: Introduction -->
@@ -558,8 +558,8 @@
             <div class="use-case-item">
                 <span class="use-case-icon">🔢</span>
                 <div class="use-case-text">
-                    <strong>27 Hooks Explained</strong>
-                    <span>Claude Code currently supports 27 hooks (as of v2.1.114)</span>
+                    <strong>30 Hooks Explained</strong>
+                    <span>Claude Code currently supports 30 hooks (as of v2.1.162)</span>
                 </div>
             </div>
             <div class="use-case-item">
@@ -580,7 +580,7 @@
                 <span class="use-case-icon">🔊</span>
                 <div class="use-case-text">
                     <strong>Voice Notifications Demo</strong>
-                    <span>This repo integrates all 27 hooks with audio feedback</span>
+                    <span>This repo integrates all 30 hooks with audio feedback</span>
                 </div>
             </div>
         </div>
@@ -596,8 +596,8 @@
 
     <!-- Slide 3: Table of Contents -->
     <div class="slide" data-slide="3">
-        <h1>The 27 Hooks</h1>
-        <p style="margin-top: -30px; margin-bottom: 24px; font-size: 1rem; color: #666;">Claude Code v2.1.114 | April 19, 2026 — More hooks may be added in future versions.</p>
+        <h1>The 30 Hooks</h1>
+        <p style="margin-top: -30px; margin-bottom: 24px; font-size: 1rem; color: #666;">Claude Code v2.1.162 | June 4, 2026 — More hooks may be added in future versions.</p>
 
         <div class="toc-list">
             <div class="toc-item" onclick="goToSlide(5)">
@@ -708,6 +708,18 @@
                 <span class="toc-number">27</span>
                 <span class="toc-name">PermissionDenied</span>
             </div>
+            <div class="toc-item" onclick="goToSlide(32)">
+                <span class="toc-number">28</span>
+                <span class="toc-name">UserPromptExpansion</span>
+            </div>
+            <div class="toc-item" onclick="goToSlide(33)">
+                <span class="toc-number">29</span>
+                <span class="toc-name">PostToolBatch</span>
+            </div>
+            <div class="toc-item" onclick="goToSlide(34)">
+                <span class="toc-number">30</span>
+                <span class="toc-name">MessageDisplay</span>
+            </div>
         </div>
     </div>
 
@@ -735,6 +747,11 @@
             </div>
             <div class="lifecycle-step">
                 <span class="lifecycle-arrow">↓</span>
+                <span class="lifecycle-label">UserPromptExpansion</span>
+                <span style="margin-left: 16px; color: #666;">If a slash command / MCP prompt expands</span>
+            </div>
+            <div class="lifecycle-step">
+                <span class="lifecycle-arrow">↓</span>
                 <span class="lifecycle-label">PreToolUse</span>
                 <span style="margin-left: 16px; color: #666;">Before each tool runs</span>
             </div>
@@ -747,6 +764,11 @@
                 <span class="lifecycle-arrow">↓</span>
                 <span class="lifecycle-label">PostToolUse / PostToolUseFailure</span>
                 <span style="margin-left: 16px; color: #666;">After tool completes</span>
+            </div>
+            <div class="lifecycle-step">
+                <span class="lifecycle-arrow">↓</span>
+                <span class="lifecycle-label">PostToolBatch</span>
+                <span style="margin-left: 16px; color: #666;">After a batch of parallel tool calls resolves</span>
             </div>
             <div class="lifecycle-step">
                 <span class="lifecycle-arrow">↓</span>
@@ -788,11 +810,12 @@
                     <span class="matcher-tag">ElicitationResult</span>
                     <span class="matcher-tag">StopFailure</span>
                     <span class="matcher-tag">PermissionDenied</span>
+                    <span class="matcher-tag">MessageDisplay</span>
                 </div>
             </div>
         </div>
 
-        <p style="margin-top: 24px;"><strong>Note:</strong> Setup fires separately via <code>--init</code>/<code>--maintenance</code> CLI flags. Notification, TeammateIdle, TaskCompleted, TaskCreated, ConfigChange, WorktreeCreate, WorktreeRemove, InstructionsLoaded, Elicitation, ElicitationResult, StopFailure, CwdChanged, FileChanged, and PermissionDenied hooks fire asynchronously at any point during the session — they are not part of the sequential flow above.</p>
+        <p style="margin-top: 24px;"><strong>Note:</strong> Setup fires separately via <code>--init</code>/<code>--maintenance</code> CLI flags. Notification, TeammateIdle, TaskCompleted, TaskCreated, ConfigChange, WorktreeCreate, WorktreeRemove, InstructionsLoaded, Elicitation, ElicitationResult, StopFailure, CwdChanged, FileChanged, PermissionDenied, and MessageDisplay hooks fire asynchronously at any point during the session — they are not part of the sequential flow above.</p>
     </div>
 
     <!-- Slide 5: SessionStart -->
@@ -2390,14 +2413,168 @@
         </div>
     </div>
 
-    <!-- Slide 32: Agent Hooks -->
+    <!-- Slide 32: UserPromptExpansion -->
     <div class="slide" data-slide="32">
+        <div class="hook-title">
+            <span class="hook-number">28</span>
+            <span class="hook-name">UserPromptExpansion</span>
+            <span class="can-block">Can Block</span>
+        </div>
+
+        <div class="trigger-box">
+            <h4>When It Triggers</h4>
+            <p>Fires when a user-typed slash command or MCP server prompt expands into a prompt, <em>before</em> it reaches Claude. Sits between <code>UserPromptSubmit</code> and <code>PreToolUse</code> — it fires when a user types a command directly, not when Claude calls the Skill tool.</p>
+        </div>
+
+        <div class="how-to-trigger">
+            <h4>How to Trigger</h4>
+            <p>Type a slash command or invoke an MCP prompt:</p>
+            <div class="trigger-example">/commit → UserPromptExpansion hook fires before the expanded prompt reaches Claude</div>
+        </div>
+
+        <div class="matcher-values">
+            <h4>Matcher Values (matches on <code>command_name</code>)</h4>
+            <span class="matcher-tag">deploy</span>
+            <span class="matcher-tag">review|audit</span>
+            <span class="matcher-tag">"" (all commands)</span>
+        </div>
+
+        <h3>Use Cases</h3>
+        <div class="use-cases">
+            <div class="use-case-item">
+                <span class="use-case-icon">🔊</span>
+                <div class="use-case-text">
+                    <strong>Voice: "Prompt expanding"</strong>
+                    <span>Audio cue when a slash command expands into a prompt</span>
+                </div>
+            </div>
+            <div class="use-case-item">
+                <span class="use-case-icon">🛑</span>
+                <div class="use-case-text">
+                    <strong>Block Risky Commands</strong>
+                    <span>Return <code>decision: "block"</code> to prevent commands like <code>/deploy</code> without approval</span>
+                </div>
+            </div>
+            <div class="use-case-item">
+                <span class="use-case-icon">📋</span>
+                <div class="use-case-text">
+                    <strong>Inject Context</strong>
+                    <span>Append a checklist or environment details to specific skills via <code>additionalContext</code></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="sound-demo">
+            🔊 Sound: userpromptexpansion.wav — "Prompt expanding"
+        </div>
+    </div>
+
+    <!-- Slide 33: PostToolBatch -->
+    <div class="slide" data-slide="33">
+        <div class="hook-title">
+            <span class="hook-number">29</span>
+            <span class="hook-name">PostToolBatch</span>
+            <span class="can-block">Can Block</span>
+        </div>
+
+        <div class="trigger-box">
+            <h4>When It Triggers</h4>
+            <p>Fires after a full batch of parallel tool calls resolves, <em>before</em> the next model call in the agentic loop. Runs once all individual <code>PostToolUse</code> / <code>PostToolUseFailure</code> hooks for the batch have completed.</p>
+        </div>
+
+        <div class="how-to-trigger">
+            <h4>How to Trigger</h4>
+            <p>Claude issues multiple tool calls in parallel and they all resolve:</p>
+            <div class="trigger-example">Read 3 files at once → batch resolves → PostToolBatch hook fires</div>
+        </div>
+
+        <h3>Use Cases</h3>
+        <div class="use-cases">
+            <div class="use-case-item">
+                <span class="use-case-icon">🔊</span>
+                <div class="use-case-text">
+                    <strong>Voice: "Batch complete"</strong>
+                    <span>Audio cue when a batch of parallel tools finishes</span>
+                </div>
+            </div>
+            <div class="use-case-item">
+                <span class="use-case-icon">🛑</span>
+                <div class="use-case-text">
+                    <strong>Batch Validation</strong>
+                    <span>Return <code>decision: "block"</code> (or exit 2) to stop the loop if any tool in the batch failed</span>
+                </div>
+            </div>
+            <div class="use-case-item">
+                <span class="use-case-icon">📊</span>
+                <div class="use-case-text">
+                    <strong>Aggregate Inspection</strong>
+                    <span>Inspect all <code>tool_calls</code> results together before Claude's next response</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="sound-demo">
+            🔊 Sound: posttoolbatch.wav — "Batch complete"
+        </div>
+    </div>
+
+    <!-- Slide 34: MessageDisplay -->
+    <div class="slide" data-slide="34">
+        <div class="hook-title">
+            <span class="hook-number">30</span>
+            <span class="hook-name">MessageDisplay</span>
+            <span class="cannot-block">Cannot Block</span>
+        </div>
+
+        <div class="trigger-box">
+            <h4>When It Triggers</h4>
+            <p>Fires while an assistant message is being displayed to the user, as the response streams. This is a display-layer hook — it runs for observability and side effects, not at a discrete lifecycle point. Introduced in v2.1.152.</p>
+        </div>
+
+        <div class="how-to-trigger">
+            <h4>How to Trigger</h4>
+            <p>Claude displays any response message to the user:</p>
+            <div class="trigger-example">Claude replies → MessageDisplay hook fires as the text is shown</div>
+        </div>
+
+        <h3>Use Cases</h3>
+        <div class="use-cases">
+            <div class="use-case-item">
+                <span class="use-case-icon">🔊</span>
+                <div class="use-case-text">
+                    <strong>Voice: "Message shown"</strong>
+                    <span>Audio cue when Claude's response is displayed</span>
+                </div>
+            </div>
+            <div class="use-case-item">
+                <span class="use-case-icon">✏️</span>
+                <div class="use-case-text">
+                    <strong>Display-Only Rewrite</strong>
+                    <span>Return <code>displayContent</code> to change on-screen text without touching the transcript or what Claude sees</span>
+                </div>
+            </div>
+            <div class="use-case-item">
+                <span class="use-case-icon">📊</span>
+                <div class="use-case-text">
+                    <strong>Analytics & Logging</strong>
+                    <span>Capture displayed messages for monitoring and notification systems</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="sound-demo">
+            🔊 Sound: messagedisplay.wav — "Message shown"
+        </div>
+    </div>
+
+    <!-- Slide 35: Agent Hooks -->
+    <div class="slide" data-slide="35">
         <h1>Agent Hooks (Bonus)</h1>
         <p>Claude Code 2.1.0 introduced support for agent-specific hooks defined in agent frontmatter files. These hooks only run within the agent's lifecycle.</p>
 
         <div class="trigger-box">
             <h4>Supported Agent Hooks</h4>
-            <p>Agent frontmatter hooks support <strong>6 of 27 hooks</strong>: PreToolUse, PostToolUse, PermissionRequest, PostToolUseFailure, Stop, and SubagentStop.</p>
+            <p>Agent frontmatter hooks support <strong>6 of 30 hooks</strong>: PreToolUse, PostToolUse, PermissionRequest, PostToolUseFailure, Stop, and SubagentStop.</p>
         </div>
 
         <div class="how-to-trigger">
@@ -2495,8 +2672,8 @@ hooks:
         </div>
     </div>
 
-    <!-- Slide 33: Configuration -->
-    <div class="slide" data-slide="33">
+    <!-- Slide 36: Configuration -->
+    <div class="slide" data-slide="36">
         <h1>Configuration</h1>
         <p>Hooks are configured in <code>.claude/settings.json</code> and can be individually enabled/disabled.</p>
 
@@ -2537,8 +2714,8 @@ hooks:
         </div>
     </div>
 
-    <!-- Slide 34: Summary -->
-    <div class="slide" data-slide="34">
+    <!-- Slide 37: Summary -->
+    <div class="slide" data-slide="37">
         <h1>Summary</h1>
 
         <div class="info-grid">
@@ -2562,7 +2739,9 @@ hooks:
             <div class="info-card">
                 <h4>User Interaction</h4>
                 <p><strong>UserPromptSubmit</strong> — Before processing prompt</p>
+                <p><strong>UserPromptExpansion</strong> — Slash command / MCP prompt expands</p>
                 <p><strong>Notification</strong> — System alerts</p>
+                <p><strong>MessageDisplay</strong> — Assistant message displayed</p>
                 <p><strong>PermissionRequest</strong> — Permission dialogs</p>
                 <p><strong>PermissionDenied</strong> — Auto mode denial</p>
             </div>
@@ -2571,6 +2750,7 @@ hooks:
                 <p><strong>PreToolUse</strong> — Before tool runs</p>
                 <p><strong>PostToolUse</strong> — After success</p>
                 <p><strong>PostToolUseFailure</strong> — After failure</p>
+                <p><strong>PostToolBatch</strong> — After parallel batch resolves</p>
             </div>
             <div class="info-card">
                 <h4>Agents & Completion</h4>
@@ -2587,7 +2767,9 @@ hooks:
         <p style="margin-bottom: 24px;">These hooks can prevent actions from proceeding:</p>
         <div class="matcher-values">
             <span class="matcher-tag">UserPromptSubmit</span>
+            <span class="matcher-tag">UserPromptExpansion</span>
             <span class="matcher-tag">PreToolUse</span>
+            <span class="matcher-tag">PostToolBatch</span>
             <span class="matcher-tag">PermissionRequest</span>
             <span class="matcher-tag">SubagentStop</span>
             <span class="matcher-tag">Stop</span>
@@ -2668,7 +2850,7 @@ hooks:
 
     <script>
         let currentSlide = 1;
-        const totalSlides = 34;
+        const totalSlides = 37;
 
         function showSlide(n) {
             const slides = document.querySelectorAll('.slide');
