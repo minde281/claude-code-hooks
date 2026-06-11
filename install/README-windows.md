@@ -22,7 +22,7 @@ Open terminal in your project directory and run the following commands:
 **PowerShell:**
 ```powershell
 New-Item -ItemType Directory -Force -Path .claude\hooks
-git clone https://github.com/shanraisshan/claude-code-hooks.git temp-hooks
+git clone https://github.com/minde281/claude-code-hooks.git temp-hooks
 Copy-Item -Recurse -Force temp-hooks\.claude\hooks\* .claude\hooks\
 Remove-Item -Recurse -Force temp-hooks
 ```
@@ -30,7 +30,7 @@ Remove-Item -Recurse -Force temp-hooks
 **Command Prompt:**
 ```cmd
 if not exist .claude\hooks mkdir .claude\hooks
-git clone https://github.com/shanraisshan/claude-code-hooks.git temp-hooks
+git clone https://github.com/minde281/claude-code-hooks.git temp-hooks
 xcopy /E /I /Y temp-hooks\.claude\hooks\* .claude\hooks\
 rmdir /S /Q temp-hooks
 ```
@@ -61,7 +61,7 @@ To test the agent-specific hooks (PreToolUse, PostToolUse, Stop), copy the demo 
 **PowerShell:**
 ```powershell
 New-Item -ItemType Directory -Force -Path .claude\agents
-git clone https://github.com/shanraisshan/claude-code-hooks.git temp-hooks
+git clone https://github.com/minde281/claude-code-hooks.git temp-hooks
 Copy-Item temp-hooks\.claude\agents\claude-code-hook-agent.md .claude\agents\
 Remove-Item -Recurse -Force temp-hooks
 ```
@@ -69,7 +69,7 @@ Remove-Item -Recurse -Force temp-hooks
 **Command Prompt:**
 ```cmd
 if not exist .claude\agents mkdir .claude\agents
-git clone https://github.com/shanraisshan/claude-code-hooks.git temp-hooks
+git clone https://github.com/minde281/claude-code-hooks.git temp-hooks
 copy temp-hooks\.claude\agents\claude-code-hook-agent.md .claude\agents\
 rmdir /S /Q temp-hooks
 ```
