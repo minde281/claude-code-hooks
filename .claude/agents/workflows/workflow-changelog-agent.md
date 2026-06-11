@@ -63,9 +63,7 @@ Read ALL of the following:
 | `.claude/hooks/config/hooks-config.json` | Disable toggles |
 | `.claude/hooks/HOOKS-README.md` | Documentation, hook table (Options column), matcher values, agent frontmatter section |
 | `README.md` | Badge versions, hook count, changelog table |
-| `install/settings-mac.json` | Mac settings |
-| `install/settings-linux.json` | Linux settings |
-| `install/settings-windows.json` | Windows settings |
+| `install/settings.json` | Universal install settings (all platforms) |
 | `presentation/index.html` | Slides, version, hook counts, lifecycle diagram, `totalSlides` |
 
 Also list directories in `.claude/hooks/sounds/` to verify sound folders exist for each hook.
