@@ -22,7 +22,7 @@ Open terminal in your project directory and run the following commands:
 
 ```bash
 mkdir -p .claude/hooks
-git clone https://github.com/shanraisshan/claude-code-hooks.git temp-hooks
+git clone https://github.com/minde281/claude-code-hooks.git temp-hooks
 cp -r temp-hooks/.claude/hooks/* .claude/hooks/
 rm -rf temp-hooks
 ```
@@ -52,7 +52,7 @@ To test the agent-specific hooks (PreToolUse, PostToolUse, Stop), copy the demo 
 
 ```bash
 mkdir -p .claude/agents
-git clone https://github.com/shanraisshan/claude-code-hooks.git temp-hooks
+git clone https://github.com/minde281/claude-code-hooks.git temp-hooks
 cp temp-hooks/.claude/agents/claude-code-hook-agent.md .claude/agents/
 rm -rf temp-hooks
 ```
