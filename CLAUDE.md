@@ -19,9 +19,8 @@ Sound notification system for all 30 Claude Code hooks. Plays sound effects when
     workflow-changelog.md
     workflow-add-hook.md
 install/
-  settings-mac.json
-  settings-linux.json
-  settings-windows.json
+  settings.json
+  README.md
 presentation/index.html
 changelog/
   changelog.md
@@ -32,7 +31,7 @@ changelog/
 
 The hook count (currently **30**) MUST match across ALL of these locations:
 - `.claude/settings.json` hook entries
-- `install/settings-mac.json`, `settings-linux.json`, `settings-windows.json`
+- `install/settings.json`
 - `hooks.py` HOOK_SOUND_MAP keys + docstring count
 - `hooks-config.json` toggle count
 - `HOOKS-README.md` heading + numbered list
@@ -43,7 +42,7 @@ The hook count (currently **30**) MUST match across ALL of these locations:
 - `demo/.claude/hooks/scripts/demo-hooks.py` HOOK_SOUND_MAP + docstring
 - `demo/hooks-lifecycle.html` flowchart SVG + prompt cards + branding count
 
-When adding a hook, use `/workflows:workflow-add-hook` — it updates all 14 files.
+When adding a hook, use `/workflows:workflow-add-hook` — it updates all 12 files.
 
 ## Agent Hooks
 
