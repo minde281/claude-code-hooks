@@ -7,7 +7,7 @@
   "disablePostToolUseFailureHook": true,
   "disablePostToolBatchHook": true,
   "disablePermissionRequestHook": false,
-  "disableNotificationHook": false,
+  "disableNotificationHook": true,
   "disableMessageDisplayHook": true,
   "disableSubagentStartHook": true,
   "disableSubagentStopHook": true,
