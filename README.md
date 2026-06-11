@@ -24,9 +24,9 @@
 ## Installation
 
 <p>
-  <a href="install/README-mac.md"><img src="!/pill-mac.svg" alt="Mac" height="36"></a>&nbsp;
-  <a href="install/README-linux.md"><img src="!/pill-linux.svg" alt="Linux" height="36"></a>&nbsp;
-  <a href="install/README-windows.md"><img src="!/pill-windows.svg" alt="Windows" height="36"></a>
+  <a href="install/README.md"><img src="!/pill-mac.svg" alt="Mac" height="36"></a>&nbsp;
+  <a href="install/README.md"><img src="!/pill-linux.svg" alt="Linux" height="36"></a>&nbsp;
+  <a href="install/README.md"><img src="!/pill-windows.svg" alt="Windows" height="36"></a>
 </p>
 
 ![How to Use](!/how-to-use.svg)
