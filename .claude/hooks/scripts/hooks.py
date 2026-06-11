@@ -173,12 +173,13 @@ def play_sound(sound_name):
                     # Windows: Use winsound for WAV files (built-in, reliable, fast)
                     if winsound:
                         # SND_FILENAME: file_path is a filename
-                        # SND_SYNC: play sound synchronously (wait until complete)
                         # SND_NODEFAULT: don't play default sound if file not found
-                        # Note: Using SND_SYNC instead of SND_ASYNC because the script exits immediately
-                        # after this call, which would terminate async playback before it completes
+                        # Note: winsound has no SND_SYNC constant — synchronous playback is the
+                        # default (the absence of SND_ASYNC). We play synchronously on purpose
+                        # because the script exits immediately after, which would otherwise
+                        # terminate async playback before it completes.
                         winsound.PlaySound(str(file_path),
-                                         winsound.SND_FILENAME | winsound.SND_SYNC | winsound.SND_NODEFAULT)
+                                         winsound.SND_FILENAME | winsound.SND_NODEFAULT)
                         return True
                     else:
                         # winsound not available, fail silently
