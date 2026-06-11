@@ -47,7 +47,7 @@ Fetch all three sources in parallel using WebFetch:
 
 Read each file first, then edit. **ALL files must be updated — no exceptions.**
 
-### Settings files (4 files)
+### Settings files (2 files)
 
 Add the hook entry in correct position. Structure:
 
@@ -57,7 +57,7 @@ Add the hook entry in correct position. Structure:
     "hooks": [
       {
         "type": "command",
-        "command": "python3 ${CLAUDE_PROJECT_DIR}/.claude/hooks/scripts/hooks.py",
+        "command": "python3 .claude/hooks/scripts/hooks.py || python .claude/hooks/scripts/hooks.py",
         "timeout": <timeout>,
         "async": true,
         "statusMessage": "<HookEventName>"
@@ -71,10 +71,10 @@ Add `"once": true` only if applicable.
 
 | File | Notes |
 |------|-------|
-| `.claude/settings.json` | `python3` + `${CLAUDE_PROJECT_DIR}` |
-| `install/settings-mac.json` | Same as above |
-| `install/settings-linux.json` | Same as above |
-| `install/settings-windows.json` | Uses `python` (no `3`) + relative path `.claude/hooks/scripts/hooks.py` (no `${CLAUDE_PROJECT_DIR}`) |
+| `.claude/settings.json` | Cross-platform fallback command + relative path |
+| `install/settings.json` | Identical to `.claude/settings.json` |
+
+> **Cross-platform command:** `python3 ... || python ...` works on every OS — `python3` runs on macOS/Linux; on Windows the `python3` Store stub exits non-zero and the `python` fallback runs. One settings file covers all platforms.
 
 ### `.claude/hooks/config/hooks-config.json`
 
@@ -216,14 +216,12 @@ Fix every match. Common locations that get missed:
 
 Run these verifications:
 1. `grep -c "<HookEventName>" .claude/settings.json` — must return ≥1
-2. `grep -c "<HookEventName>" install/settings-mac.json` — must return ≥1
-3. `grep -c "<HookEventName>" install/settings-linux.json` — must return ≥1
-4. `grep -c "<HookEventName>" install/settings-windows.json` — must return ≥1
-5. `grep -c "<HookEventName>" demo/.claude/settings.json` — must return ≥1
-6. `grep -c "<HookEventName>" demo/.claude/hooks/scripts/demo-hooks.py` — must return ≥1
-7. `grep -c "<HookEventName>" demo/hooks-lifecycle.html` — must return ≥1
-8. `grep -c "data-card-hooks=.*<HookEventName>" demo/hooks-lifecycle.html` — must return ≥1 (prompt card check)
-9. `grep 'hook-number' presentation/index.html | grep -v '\.hook-number'` — verify numbers are sequential 1 through N with NO duplicates and NO gaps. This catches the numbering bug where a new hook copies the previous hook's number instead of incrementing.
+2. `grep -c "<HookEventName>" install/settings.json` — must return ≥1
+3. `grep -c "<HookEventName>" demo/.claude/settings.json` — must return ≥1
+4. `grep -c "<HookEventName>" demo/.claude/hooks/scripts/demo-hooks.py` — must return ≥1
+5. `grep -c "<HookEventName>" demo/hooks-lifecycle.html` — must return ≥1
+6. `grep -c "data-card-hooks=.*<HookEventName>" demo/hooks-lifecycle.html` — must return ≥1 (prompt card check)
+7. `grep 'hook-number' presentation/index.html | grep -v '\.hook-number'` — verify numbers are sequential 1 through N with NO duplicates and NO gaps. This catches the numbering bug where a new hook copies the previous hook's number instead of incrementing.
 
 Count hooks across all files and print a summary. **All counts must match the expected new total — if ANY count is wrong, fix it before finishing.**
 
@@ -233,9 +231,7 @@ Hook Addition Summary: <HookEventName>
 Sound folder:     ✓/✗
 Sound files:      ✓/✗
 settings.json:    N hooks ✓/✗
-settings-mac:     N hooks ✓/✗
-settings-linux:   N hooks ✓/✗
-settings-windows: N hooks ✓/✗
+install/settings: N hooks ✓/✗
 hooks-config:     N toggles ✓/✗
 hooks.py:         N mappings ✓/✗
 HOOKS-README:     N hooks ✓/✗
@@ -255,7 +251,7 @@ demo/lifecycle:   flowchart + card ✓/✗
 
 1. **NEVER proceed past Step 1 if sound files don't exist** — always wait for the user
 2. **Read each file before editing** — understand current state first
-3. **ALL 5 settings files must be updated** — Windows uses `python` (not `python3`) and relative paths; demo uses `demo-hooks.py`
+3. **ALL 3 settings files must be updated** — `.claude/settings.json`, `install/settings.json` (identical), and `demo/.claude/settings.json` (uses `demo-hooks.py`)
 4. **Keep `disableLogging` as the LAST entry** in hooks-config.json
 5. **Only update `HOOK_SOUND_MAP`** — not `AGENT_HOOK_SOUND_MAP` (in both `hooks.py` and `demo-hooks.py`)
 6. **Match existing code style exactly** — indentation, structure, formatting
